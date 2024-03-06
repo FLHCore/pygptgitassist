@@ -40,6 +40,7 @@ setup(
     entry_points={
         "console_scripts": [
             "create-git-pr-diff=create_git_pr_diff_for_gpt:main",
+            "create-git-unstaged-diff=create_git_unstaged_diff:log_git_changes",
         ],
     },
 )

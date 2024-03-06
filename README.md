@@ -29,3 +29,19 @@ Options:
 
 1. 單個文件差異：每個變更過的文件都會有一個對應的 `{safe_filename}.git_diff` 文件，其中`{safe_filename}`是原始文件名，將 `/` 替換為 `.` 。
 2. 總差異文件：名為 `total.git_diff` 的文件，包含了所有變更文件的差異信息。
+
+# create-git-unstaged-diff
+
+```bash
+Usage: create-git-unstaged-diff [OPTIONS]
+
+  This CLI tool logs the git changed files and their diffs to a log file.
+
+Options:
+  --log-path TEXT  Custom log file path. If not provided, will use the script
+                   name with .log extension.
+  --help           Show this message and exit.
+```
+
+此腳本用於生成 Git 倉庫中未暫存的文件的差異信息，並將差異信息保存到文件中，以便進一步分析和審查。
+執行腳本後，會在 Git 倉庫的當前目錄下生成一個 `create_git_unstaged_diff.log` 文件，其中包含了所有未暫存文件的差異信息，方便開發者提供給 ChatGPT 生成標準 git commit msg。
