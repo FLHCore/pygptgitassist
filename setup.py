@@ -39,7 +39,7 @@ setup(
     python_requires='>=3.7',
     entry_points={
         "console_scripts": [
-            "create-git-diff=create_git_diff_for_gpt:main",
+            "create-git-pr-diff=create_git_pr_diff_for_gpt:main",
         ],
     },
 )
