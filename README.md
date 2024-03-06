@@ -4,7 +4,7 @@ Your SW Git Repository CLI Tool for GPT Assistant
 ## Installation or Upgrade
 
 ```sh
-pip install --upgrade https://github.com:FLHCore/pygptgitassist/releases/download/0.0.1/pygptgitassist-0.0.1-py3-none-any.whl
+pip install --upgrade https://github.com/FLHCore/pygptgitassist/releases/download/0.0.1/gptgitassist-0.0.1-py3-none-any.whl
 ```
 
 # create-git-diff CLI
