@@ -33,16 +33,14 @@ setup(
     author=__author__,
     author_email=__email__,
     license="MIT",
-    packages=find_packages(where=['src', '.']),
+    packages=find_packages(where='src'),
     package_dir={'': 'src'},
     install_requires=install_requires,
     python_requires='>=3.7',
     entry_points={
         "console_scripts": [
-            "create-git-pr-diff=create_git_pr_diff_for_gpt:main",
-            "create-git-unstaged-diff=create_git_unstaged_diff:log_git_changes",
-            "gdiff-pr=create_git_pr_diff_for_gpt:main",
-            "gdiff-unstaged=create_git_unstaged_diff:log_git_changes",
+            "gdiff-pr=gptassist.create_git_pr_diff_for_gpt:main",
+            "gdiff-unstaged=gptassist.create_git_unstaged_diff:log_git_changes",
         ],
     },
 )
