@@ -1,6 +1,37 @@
 import os
 import subprocess
 import click
+import dotenv
+from openai import OpenAI
+
+dotenv.load_dotenv()
+openai_api_key = os.getenv("OPENAI_API_KEY", '')
+
+
+def _chat_with_gpt(total_diff: str) -> str:
+    client = OpenAI(
+        api_key=openai_api_key
+    )
+    chat_completion = client.chat.completions.create(
+        messages=[
+            {
+                "role": "system",
+                "content": "请根据以下git diff输出，生成一个符合Conventional Commits规范的commit message。"
+            },
+            {
+                "role": "user",
+                "content": f"git diff输出内容：\n\n{total_diff}"
+            },
+            {
+                "role": "system",
+                "content": "分析diff输出，理解代码变更的主要内容和目的。根据Conventional Commits规范，确定合适的type、[optional scope]和description。生成建议的commit message。"
+            }
+        ]
+        ,
+        model="gpt-4",
+    )
+    # print(chat_completion)
+    return chat_completion.choices[0].message.content
 
 
 @click.command()
@@ -44,6 +75,12 @@ def log_git_changes(log_path):
 
             with open(log_path, 'a') as log_file:
                 log_file.write(diff_output)
+
+    if openai_api_key:
+        with open(log_path, 'r') as f:
+            total_diff = f.read()
+        commit_message = _chat_with_gpt(total_diff)
+        click.echo(commit_message)
 
 
 if __name__ == '__main__':
