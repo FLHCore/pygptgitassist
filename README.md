@@ -4,13 +4,13 @@ Your SW Git Repository CLI Tool for GPT Assistant
 ## Installation or Upgrade
 
 ```bash
-pip install --upgrade https://github.com/FLHCore/pygptgitassist/releases/download/0.0.1/gptgitassist-0.0.1-py3-none-any.whl
+pip install --upgrade https://github.com/FLHCore/pygptgitassist/releases/download/0.0.2/gptgitassist-0.0.2-py3-none-any.whl
 ```
 
-# create-git-pr-diff
+# gdiff-pr
 
 ```bash
-Usage: create-git-pr-diff [OPTIONS] COMMIT_ID_START COMMIT_ID_END
+Usage: gdiff-pr [OPTIONS] COMMIT_ID_START COMMIT_ID_END
 
   Generates and accumulates git diff outputs between two commits into
   individual and total diff files.
@@ -30,10 +30,10 @@ Options:
 1. 單個文件差異：每個變更過的文件都會有一個對應的 `{safe_filename}.git_diff` 文件，其中`{safe_filename}`是原始文件名，將 `/` 替換為 `.` 。
 2. 總差異文件：名為 `total.git_diff` 的文件，包含了所有變更文件的差異信息。
 
-# create-git-unstaged-diff
+# gdiff-unstaged
 
 ```bash
-Usage: create-git-unstaged-diff [OPTIONS]
+Usage: gidff-unstaged [OPTIONS]
 
   This CLI tool logs the git changed files and their diffs to a log file.
 
