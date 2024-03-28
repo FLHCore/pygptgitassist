@@ -3,12 +3,11 @@ import subprocess
 import click
 
 
-def calculate_line_count(filename, commit_id_start, commit_id_end, repo_path):
-    """计算文件在两个提交之间的最大变更行数"""
-    diff_output = subprocess.run(['git', 'diff', f'{commit_id_start}^', commit_id_end, '--', filename],
-                                 capture_output=True, text=True, cwd=repo_path).stdout
-    # 简化计算：使用diff输出的行数作为上下文行数
-    return max(3, len(diff_output.splitlines()))  # 至少使用3行作为上下文
+def calculate_line_count(filename, repo_path):
+    """计算文件的行数"""
+    result = subprocess.run(['wc', '-l', filename], capture_output=True, text=True, cwd=repo_path)
+    line_count = int(result.stdout.split()[0])
+    return line_count
 
 
 @click.command()
@@ -32,7 +31,7 @@ def main(commit_id_start, commit_id_end, repo_path):
     for filename in changed_files:
         safe_filename = filename.replace('/', '.')
         individual_diff_file = os.path.join(gitdiff_dir, f'{safe_filename}.git_diff')
-        line_count = calculate_line_count(filename, commit_id_start, commit_id_end, repo_path)
+        line_count = calculate_line_count(filename, repo_path)
 
         with open(individual_diff_file, 'w') as f:
             subprocess.run(['git', 'diff', f'-U{line_count}', f'{commit_id_start}^', commit_id_end, '--', filename],

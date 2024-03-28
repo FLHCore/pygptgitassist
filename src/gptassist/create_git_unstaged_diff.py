@@ -3,6 +3,7 @@ import subprocess
 import click
 import dotenv
 from openai import OpenAI
+from gptassist.create_git_pr_diff_for_gpt import calculate_line_count
 
 dotenv.load_dotenv()
 openai_api_key = os.getenv("OPENAI_API_KEY", '')
@@ -67,7 +68,9 @@ def log_git_changes(log_path):
                 log_file.write(f"### {file}\n")
 
             # 显示每个文件的diff，并追加到日志文件
-            proc = subprocess.Popen(['git', 'diff', file], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            line_count = calculate_line_count(file, '.')
+            proc = subprocess.Popen(['git', 'diff', f'-U{line_count}', '--', file],
+                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout, stderr = proc.communicate()
             diff_output = stdout.decode()
 
