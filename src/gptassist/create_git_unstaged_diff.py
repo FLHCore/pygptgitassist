@@ -79,11 +79,11 @@ def log_git_changes(log_path):
             with open(log_path, 'a') as log_file:
                 log_file.write(diff_output)
 
-    if openai_api_key:
-        with open(log_path, 'r') as f:
-            total_diff = f.read()
-        commit_message = _chat_with_gpt(total_diff)
-        click.echo(commit_message)
+    # if openai_api_key:
+    #     with open(log_path, 'r') as f:
+    #         total_diff = f.read()
+    #     commit_message = _chat_with_gpt(total_diff)
+    #     click.echo(commit_message)
 
 
 if __name__ == '__main__':
