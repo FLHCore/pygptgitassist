@@ -7,6 +7,7 @@ from gptassist.create_git_pr_diff_for_gpt import calculate_line_count
 
 dotenv.load_dotenv()
 openai_api_key = os.getenv("OPENAI_API_KEY", '')
+OUTPUT_PATH = os.getenv("OUTPUT_PATH", 'build')
 
 
 def _chat_with_gpt(total_diff: str) -> str:
@@ -36,20 +37,27 @@ def _chat_with_gpt(total_diff: str) -> str:
 
 
 @click.command()
-@click.option('--log-path', default=None,
+@click.option('--log-path', default='git-diff-unstaged.log',
               help='Custom log file path. If not provided, will use the script name with .log extension.')
-def log_git_changes(log_path):
+@click.option('-o', '--output-path', default=OUTPUT_PATH, help='Path to the output directory.')
+def log_git_changes(log_path, output_path):
     """
     This CLI tool logs the git changed files and their diffs to a log file.
     """
-    script_name = os.path.splitext(os.path.basename(__file__))[0]
+    output_path = f'{os.path.join(".", output_path)}'
 
     # 如果用户没有指定日志文件路径，则使用默认的路径
     if not log_path:
+        script_name = os.path.splitext(os.path.basename(__file__))[0]
         log_path = f"{script_name}.log"
 
+    log_path = os.path.join(output_path, log_path)
+
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+
     # 清空或创建日志文件，准备记录新的内容
-    with open(log_path, 'w') as log_file:
+    with open(log_path, 'w'):
         pass  # 打开文件后立即关闭，等同于清空或创建文件
 
     # 获取变更的文件列表

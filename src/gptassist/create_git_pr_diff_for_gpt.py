@@ -1,6 +1,10 @@
 import os
 import subprocess
 import click
+import dotenv
+
+dotenv.load_dotenv()
+OUTPUT_PATH = os.getenv("OUTPUT_PATH", 'build')
 
 
 def calculate_line_count(filename, repo_path):
@@ -14,15 +18,15 @@ def calculate_line_count(filename, repo_path):
 @click.argument('commit_id_start')
 @click.argument('commit_id_end')
 @click.option('--repo_path', default='.', help='Path to the Git repository.')
-def main(commit_id_start, commit_id_end, repo_path):
+@click.option('-o', '--output-path', default=OUTPUT_PATH, help='Path to the output directory.')
+def main(commit_id_start, commit_id_end, repo_path, output_path):
     """Generates and accumulates git diff outputs between two commits into individual and total diff files."""
-    gitdiff_dir = os.path.join(repo_path, '.gitdiff')
+    output_path = f'{os.path.join(repo_path, output_path)}'
 
-    if os.path.exists(gitdiff_dir):
-        subprocess.run(['rm', '-rf', gitdiff_dir], check=True)
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
 
-    os.makedirs(gitdiff_dir)
-    total_diff_file = os.path.join(gitdiff_dir, 'total.git_diff')
+    total_diff_file = os.path.join(output_path, 'total.git_diff')
     open(total_diff_file, 'w').close()  # 创建或清空 total.git_diff 文件
 
     changed_files = subprocess.run(['git', 'diff', '--name-only', f'{commit_id_start}^', commit_id_end],
@@ -30,7 +34,7 @@ def main(commit_id_start, commit_id_end, repo_path):
 
     for filename in changed_files:
         safe_filename = filename.replace('/', '.')
-        individual_diff_file = os.path.join(gitdiff_dir, f'{safe_filename}.git_diff')
+        individual_diff_file = os.path.join(output_path, f'{safe_filename}.git_diff')
         line_count = calculate_line_count(filename, repo_path)
 
         with open(individual_diff_file, 'w') as f:
