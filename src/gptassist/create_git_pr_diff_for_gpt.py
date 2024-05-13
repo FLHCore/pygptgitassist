@@ -10,8 +10,12 @@ OUTPUT_PATH = os.getenv("OUTPUT_PATH", 'build')
 def calculate_line_count(filename, repo_path):
     """计算文件的行数"""
     result = subprocess.run(['wc', '-l', filename], capture_output=True, text=True, cwd=repo_path)
-    line_count = int(result.stdout.split()[0])
-    return line_count
+    print(f'calculate_line_count for file {filename} ... {result.stdout.split()}')
+    if len(result.stdout.split()) > 0:
+        line_count = int(result.stdout.split()[0])
+        return line_count
+    else:
+        return None
 
 
 @click.command()
@@ -36,17 +40,20 @@ def main(commit_id_start, commit_id_end, repo_path, output_path):
         safe_filename = filename.replace('/', '.')
         individual_diff_file = os.path.join(output_path, f'{safe_filename}.git_diff')
         line_count = calculate_line_count(filename, repo_path)
+        if line_count:
+            with open(individual_diff_file, 'w') as f:
+                subprocess.run(['git', 'diff', f'-U{line_count}', f'{commit_id_start}^', commit_id_end, '--', filename],
+                               stdout=f, cwd=repo_path)
 
-        with open(individual_diff_file, 'w') as f:
-            subprocess.run(['git', 'diff', f'-U{line_count}', f'{commit_id_start}^', commit_id_end, '--', filename],
-                           stdout=f, cwd=repo_path)
+            print(f'Generated diff for {filename} with context lines: {line_count} in {individual_diff_file}')
 
-        print(f'Generated diff for {filename} with context lines: {line_count} in {individual_diff_file}')
-
-        with open(total_diff_file, 'a') as f:
-            f.write(f"---- {filename} ----\n")
-            with open(individual_diff_file, 'r') as individual_f:
-                f.writelines(individual_f.readlines())
+            with open(total_diff_file, 'a') as f:
+                f.write(f"---- {filename} ----\n")
+                with open(individual_diff_file, 'r') as individual_f:
+                    f.writelines(individual_f.readlines())
+        else:
+            with open(total_diff_file, 'a') as f:
+                f.write(f"---- Skip file diff for {filename} ----\n")
 
 
 if __name__ == '__main__':
