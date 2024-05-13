@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 __title__ = 'gptgitassist'
-__version__ = '0.0.3'
+__version__ = '0.0.5'
 __author__ = 'FLHCore'
 __email__ = 'operation@flh.com.tw'
 
